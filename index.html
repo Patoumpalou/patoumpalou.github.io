@@ -1,774 +1,202 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kaouded</title>
+<style>
+  :root {
+    --bg-dark: #120a1f;
+    --text-light: #f0f0f0;
+  }
+  * {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+  html, body {
+    height: 100%;
+    background: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+  }
+  canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    display: block;
+  }
+  .box{
+    width: 100%;
+    padding: 3rem 2rem;
+    background: rgba(255 255 255 / 0.08);
+    border-radius: 1.5rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+    /* min-height: calc(100vh - 160px); */
 
-<!-- saved from url=(0074)file:///C:/Users/Piotr/Downloads/aaaa%20scolaire%20cycle%203%20-%2005.html -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+  }
+  .container {
+    display: flex;
+    
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100vh;
+    max-width: 480px;
+    margin: 0 auto;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+  }
+  h1 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  .link-list {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .link-list a {
+    padding: 1rem 1.5rem;
+    background: rgba(255 255 255 / 0.12);
+    border-radius: 2rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.3s ease;
+  }
+  .link-list a:hover {
+    background: rgba(255 255 255 / 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 0 12px rgba(255 255 255 / 0.4);
+  }
 
-<title>Tournoi Scolaire Cycle 3</title>
-<style type="text/css">
- .papi_liste_c {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #000000; background-color: #FFFFFF;}
- .papi_liste_f {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: normal; color: #000000; background-color: #E0E0E0;}
- .papi_small_c {font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: normal; color: #000000; background-color: #FFFFFF;}
- .papi_small_f {font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: normal; color: #000000; background-color: #E0E0E0;}
- .papi_small_t {font-family: Arial, Helvetica, sans-serif; font-size: 10px; font-weight: bold; color: #000000; background-color: #FFFFFF;}
- .papi_liste_t {font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: bold; color: #000000; background-color: #FFFFFF;}
- .papi_titre {font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: bold; color: #000000; margin-bottom: 12px; border: thin none; background-color: #FFFFFF;}
- .papi_titre_big {font-family: Arial, Helvetica, sans-serif; font-size: 24pt; font-weight: bold;}
- .papi_titre_medium {font-family: Arial, Helvetica, sans-serif; font-size: 16pt; font-weight: bold;}
- .papi_l {border-style: solid; border-color: black; border-width:0px; text-align:left;}
- .papi_r {border-style: solid; border-color: black; border-width:0px; text-align:right;}
- .papi_c {border-style: solid; border-color: black; border-width:0px; text-align:center;}
- .papi_border_l {border-style: solid; border-color: black; border-width:1px; text-align:left;}
- .papi_border_r {border-style: solid; border-color: black; border-width:1px; text-align:right;}
- .papi_border_c {border-style: solid; border-color: black; border-width:1px; text-align:center;}
- .papi_joueur_box {position: relative; z-index: 0;}
-.papi_joueur_box:hover {position: relative; z-index: 50;}
-.papi_joueur_box .data {display: none; border: black solid 1px;}
-.papi_joueur_box:hover .data {display: block; position: absolute; left: 60px; top: 12px; padding: 5px 5px 5px 5px; border: 1px solid grey; background-color: white; }
+  .list-item{
+    text-align:center;
+  }
+
 </style>
 </head>
-<body topmargin="4" leftmargin="4">
-<div align="center">
-    <div align=center>
-    <input type="text" id="searchInput" placeholder="Rechercher..." style="margin-bottom:10px; padding:5px; width:90%; max-width:400px; font-size:16px;">
-<script>
-document.getElementById("searchInput").addEventListener("keyup", function() {
-  const filter = this.value.toLowerCase();
-  const rows = document.querySelectorAll("table tr");
+<body>
 
-  rows.forEach((row, index) => {
-    if (index < 2) return; // Ignore le titre et l'en-tête
+<canvas id="lavaCanvas"></canvas>
 
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(filter) ? "" : "none";
-  });
-});
-</script>
-<table width="750" cellpadding="2" cellspacing="0" style="border-collapse:collapse;">
- <tbody><tr class="papi_titre">
-  <td colspan="8" align="center">Tournoi Scolaire Cycle 3<br>Appariements de la ronde 5</td>
- </tr>
- <tr class="papi_liste_t">
-  <td class="papi_r">Ech.</td>
-  <td class="papi_c">Pts</td>
-  <td class="papi_l">Blancs</td>
-  <td class="papi_r">&nbsp;</td>
-  <td class="papi_c">Res.</td>
-  <td class="papi_l">Noirs</td>
-  <td class="papi_r">&nbsp;</td>
-  <td class="papi_c">Pts</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">1</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">LELARGE Noe Idjmini A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ABENIE Frederic Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">2</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">BOUGEREL Noemie Idjmini A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LOUTOBY Kiyan Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">3</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">CARMIGNANI Victoria Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MADLON Yann Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">4</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">CASTOR Heyndrico Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MATHURIN Damian Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">5</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">MALON Marianice Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">COIGNARD Adam Idjmini A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">6</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">CONDE Aminata Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MOSQUEA Yeury Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">7</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">COQUERAN Dyklan Idph D</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">N'GUYEN VAN DANH Jason Idjmini A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">8</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">NGAA Chris Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ERIPRET Arsa Ne Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">9</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">FANTOLI Alessandro Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">PRAJOEWARI Yonatan Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">10</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">GEORGES Esther Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">RODRIGUEZ Tabian Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">11</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">RENARD JOLIET Keyhann Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">GONZALES Carlos Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">12</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">IBOS Logan Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ROMAIN Manoah Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">13</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">SAMPAIN Yeteline Idclm</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LABAT Owen Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">14</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">LACROIX Maxime Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">TAITRAM Kea Van Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">15</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">LAVANNE Kaa Cy Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">VINCENT Naa L Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">16</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">TOTE Daviarno Idclm</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LECHEVALIER Thomas Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">17</td>
-  <td class="papi_c">2</td>
-  <td class="papi_l">ZEPHIRIN Gaa Lle Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LEDIVELEC-GOLITIN Lena Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">2</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">18</td>
-  <td class="papi_c">1�</td>
-  <td class="papi_l">FOULON Teo Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CORNUAILLE Nahla Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1�</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">19</td>
-  <td class="papi_c">1�</td>
-  <td class="papi_l">PEDIE Jejinio Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">PASSARD Elea Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1�</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">20</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">COLINO Oliviela Idclm</td>
-  <td class="papi_r">1399&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">GUY Amalia Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">21</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">GRANGER Samuel Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">DEEL Ilsonne Idclm</td>
-  <td class="papi_r">1399&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">22</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">ADOPA Melvina Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">HELOPIN Kobe Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">23</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">ANABI Billy Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">IDA Cherino Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">24</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">HAMADOU Milhan Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ANDRE Maa Lann Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">25</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">HENRY Guervyn Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ARRONDEL CLAMARAN Isayah Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">26</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">JEAN LOUIS Samuel Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BAILLY Mahe Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">27</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">BALBUENO Kenley Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">JOHNNY YAMB NGAN NGU Sefiane Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">28</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">BAUD Hanae Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LERON Rood Lyns Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">29</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">JEAN-BAPTISTE Wild Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BECOS Robin Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">30</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">BOISSARD Andry Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LONTSI NGOULA Anais Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">31</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">KELION Daniski Idclm</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BONEGRE Stanley Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">32</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">BOSSE Malyck Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LOUISSAINT Shendy Idjmini C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">33</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">LAE Enoha Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BOURGEOIS Rose Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">34</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">MACIEL Junior Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BRAGA PINTO Dawens Idema</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">35</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">MAISSA Marciane Idclm</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BREI Fabrichio Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">36</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">BREVAL Lynnaa Lle Idema</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MARSAULT Hugo Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">37</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">CADIOU Timothee Idph D</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MERTOSETIKO Yannis Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">38</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">METELLA Naa Lle Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CASIMIR Jessy-William Idph</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">39</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">N'DIAYE Maa Mouna Idph D</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CASTOR Heynrico Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">40</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">PAJINADON Jonas Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CHARPENTIER TITY Nayati Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">41</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">CHONVILLE Alain-Nicolas Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">MONTERO Malvin Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">42</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">DELOURNEAUX Neela Idph D</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">RENE Maeva Idema</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">43</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">PAISSI Nicole Idclm</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">DENIZARD Esperanza Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">44</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">DEREYNAL Marc-Antoine Idjmi</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">PELET Sacha Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">45</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">SALABAY Emma Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">DESTOUCHES Daniel Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">46</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">DUNYACH Leny Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">RODRIGUEZ Yael Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">47</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">FAUVEL Lucien Idjmini A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">RUPERT Logan Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">48</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">SILVANO-TOULET Anae Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">FLANT Alysson Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">49</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">GABRIE Noa Idha</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">SOSA PEREZ Carmen Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">50</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">TAJA Taa Na Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">GARNIER Izia Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">51</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">GOHIER GARBARENKO Arthur Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">VOYER EDWIGE Madhyba Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">52</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">GOUIN Norah Idema</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">WITHNEL Lorenzo Idph D</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">53</td>
-  <td class="papi_c">1</td>
-  <td class="papi_l">VARLIN Elizee-Marie Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">GOVINDIN Leensya Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">1</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">54</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">BELIS Aleksy</td>
-  <td class="papi_r">1399&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">HULIC MENCLE Steyss Ann Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">55</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">DESROSIERS Nolan Idema</td>
-  <td class="papi_r">1399&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">JOSEPH-FRANCOIS Mathieu Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">56</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">SIESA Emmilio Idjmini</td>
-  <td class="papi_r">1399&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LAFORTUNE Bashelie Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">57</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">ABREU RODRIGUEZ Jerson Ided</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">LEMARCHAND Norah Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">58</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">MARCEL Lyam Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ACHILLE-ROHEE Keoni Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">59</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">MATHEE Charly Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">AMAIDOE Rochena Idec</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">60</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">MORENO Enzo Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ANNEVILLE Luc Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">61</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">MOSQUEA Yismailin Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">ARON BERGE Tess Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">62</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">BAFAU Omarion Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">NORVAL Kylian Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">63</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">PALMOT Jahyann Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BARTY Thomas Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">64</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">POLIUS Shawn Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">BOUDAY Gabrielle Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">65</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">RINGUET Ayvann Idega</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CADET Jayan Idph B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">66</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">TAMBAZA Remi Idegb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">CARELUS Coeurtys Idph C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">67</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">CEPRIKA Maa Ara Idjmini C</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">SEEDO Oceane Idemx</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">68</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">TOMPSON Florian Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">COUPAN Keyvan'N Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">69</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">ERIPRET Zelda Idjl</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">SIESA Victor Idjmini B</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_c">
-  <td class="papi_r">70</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">FRANCOIS BERNARD Ina S Idph A</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">VA Ezekiel Idjma</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
- <tr class="papi_liste_f">
-  <td class="papi_r">71</td>
-  <td class="papi_c">0</td>
-  <td class="papi_l">VICTOR Woodjaly Idema</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">&nbsp;</td>
-  <td class="papi_l">GIMONDI Aa Da Idjmb</td>
-  <td class="papi_r">1199&nbsp;E</td>
-  <td class="papi_c">0</td>
- </tr>
-</tbody></table>
+<div class="container" aria-label="Zone de liens">
+  <div class="box">
+    <h1>My links</h1>
+    <div class="link-list">
+      <a class="list-item" href="https://imgur.com/a/eDAGnXi" target="_blank">Imgur - Draws & paintings</a>
+      <a class="list-item" target="_blank" href="https://docs.google.com/spreadsheets/d/1OO6ydyNFpgGpB3dMsTYziOsUjWH3mcNi5K128S9P_hc/edit?usp=sharing" target="_blank">Google Drive - My lists</a>
+      <a class="list-item" target="_blank" href="https://soundcloud.com/user-427624273">Soundcloud - Music</a>
+      <a class="list-item" target="_blank" href="https://www.youtube.com/@piotrbelon8360/playlists">Youtube - Music & podcasts</a>
+      <!-- <a class="list-item" target="_blank" href="https://x.com/LeKaoud">X - Reposts</a> -->
+    </div>
+
+  </div>
 </div>
 
+<script>
+  const canvas = document.getElementById('lavaCanvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
 
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    canvas.style.width = width + 'px';
+    canvas.style.height = height + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+  }
+  window.addEventListener('resize', resize);
+  resize();
 
-</body></html>
+  // Paramètres blobs
+  const pointsCount = 40;
+  const blobWidth = width +100; // 100% largeur écran
+  const blobHeight = 40;   // hauteur réduite
+  const horizontalMargin = 0; // pas de marge horizontal, full width
+
+  // Génère points avec phase random pour ondulations
+  function generatePoints(yBase) {
+    const pts = [];
+    for(let i = 0; i <= pointsCount; i++) {
+      pts.push({
+        x: horizontalMargin + (i / pointsCount) * blobWidth,
+        baseY: yBase,
+        offsetPhase: Math.random() * Math.PI * 2
+      });
+    }
+    return pts;
+  }
+
+  // Deux blobs : en haut et en bas
+  const topBlobPoints = generatePoints(blobHeight);
+  const bottomBlobPoints = generatePoints(height - blobHeight);
+
+  function drawBlob(points, t, isTop) {
+    const amplitude = 20;
+    const freq = 0.004;
+    ctx.beginPath();
+
+    // Premiers points + ondulations
+    for(let i=0; i < points.length; i++) {
+      const pt = points[i];
+      pt.y = pt.baseY + amplitude * Math.sin(freq * t + pt.offsetPhase + i * 0.3);
+      if(i === 0) {
+        ctx.moveTo(pt.x, pt.y);
+      } else {
+        const prev = points[i-1];
+        const cx = (prev.x + pt.x) / 2;
+        const cy = (prev.y + pt.y) / 2;
+        ctx.quadraticCurveTo(prev.x, prev.y, cx, cy);
+      }
+    }
+
+    // Fermer forme (vers le haut si bas, vers le bas si haut)
+    if(isTop) {
+      ctx.lineTo(points[points.length - 1].x, 0);
+      ctx.lineTo(points[0].x, 0);
+      ctx.closePath();
+    } else {
+      ctx.lineTo(points[points.length - 1].x, height);
+      ctx.lineTo(points[0].x, height);
+      ctx.closePath();
+    }
+
+    // Dégradé chaud
+    const gradient = ctx.createLinearGradient(0, points[0].baseY - blobHeight, 0, points[0].baseY + blobHeight);
+    gradient.addColorStop(0, 'rgba(255,140,40,0.9)');
+    gradient.addColorStop(0.5, 'rgba(255,90,10,0.95)');
+    gradient.addColorStop(1, 'rgba(150,40,0,0.9)');
+
+    ctx.fillStyle = gradient;
+    ctx.shadowColor = 'rgba(255,100,30,0.9)';
+    ctx.shadowBlur = 25;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+
+  function animate(t=0) {
+    ctx.clearRect(0, 0, width, height);
+    drawBlob(topBlobPoints, t, true);
+    drawBlob(bottomBlobPoints, t, false);
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+</script>
+
+</body>
+</html>
